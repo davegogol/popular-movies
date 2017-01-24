@@ -54,7 +54,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         void bind(int gridIndex) {
             Picasso.
                     with(gridItemMovieView.getContext()).
-                    load("http://i.imgur.com/DvpvklR.png").into(gridItemMovieView);
+                    load("http://image.tmdb.org/t/p/w500/"+ moviesData[gridIndex] +".jpg").into(gridItemMovieView);
+            gridItemMovieView.setAdjustViewBounds(true);
         }
     }
 }
