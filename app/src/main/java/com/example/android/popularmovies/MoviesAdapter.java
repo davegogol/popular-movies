@@ -9,13 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.domain.Movie;
+
+import java.util.List;
+
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
-    private String[] moviesData;
+    private List<Movie> moviesData;
 
     private static final String TAG = MoviesAdapter.class.getSimpleName();
 
-    public MoviesAdapter(String[] moviesData) {
+    public MoviesAdapter(List<Movie> moviesData) {
         this.moviesData = moviesData;
     }
 
@@ -40,7 +44,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public int getItemCount() {
-        return moviesData.length;
+        return moviesData.size();
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -53,7 +57,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                     itemView.findViewById(R.id.tv_item_movie);
         }
         void bind(int gridIndex) {
-            gridItemMovieView.setText(moviesData[gridIndex]);
+            gridItemMovieView.setText(moviesData.get(gridIndex).getName());
         }
+    }
+
+    public void setMoviesData(List<Movie> moviesData) {
+        this.moviesData = moviesData;
+        notifyDataSetChanged();
     }
 }
