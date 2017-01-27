@@ -12,19 +12,33 @@ import java.net.URL;
 
 import static com.example.android.popularmovies.utils.NetworkUtils.getStringBodyResponseFromHttpUrl;
 
+/**
+ * MoviesAPIClient represents the "themoviedb" API client.
+ * Helper class to forward the needed HTTP requests and fetch the data.
+ */
 public class MoviesAPIClient {
     private static final String TAG = NetworkUtils.class.getSimpleName();
     final static String KEY_PARAM = "api_key";
     private static final String THE_MOVIE_API_URL = "https://api.themoviedb.org/3/movie/";
     private static final String POPULAR_PATH = "popular";
     private static final String TOP_RATED_PATH = "topRated";
+    private static final String POPULAR = "POPULAR";
+    private static final String TOP_RATED = "TOP_RATED";
 
-    public  String getPopularMovies(){
-        String criteria = "POPULAR";
+    /**
+     * Returns the most popular movies as JSON string.
+     * @return JSON string
+     */
+    public String getPopularMovies(){
+        String criteria = POPULAR;
         String popularMovies = getMoviesBy(criteria);
         return popularMovies;
     }
 
+    /**
+     * Returns the top rated movies as JSON string.
+     * @return JSON string
+     */
     public  String getTopRatedMovies(){
         String criteria = "TOP_RATED";
         String topRatedMovies = getMoviesBy(criteria);
@@ -32,21 +46,22 @@ public class MoviesAPIClient {
     }
 
     private String getMoviesBy(String popular) {
-        String popularMovies = "";
-        URL getPopularMovies = buildUrl(popular);
+        String movies = "";
+        URL moviesUrl = buildUrl(popular);
         try {
-            popularMovies = getStringBodyResponseFromHttpUrl(getPopularMovies);
+            movies = getStringBodyResponseFromHttpUrl(moviesUrl);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "IO Exception thrown!", e);
         }
-        return popularMovies;
+        return movies;
     }
 
-    private static URL buildUrl(String criteria) {
+    private URL buildUrl(String criteria) {
         String subPath;
+
         switch (criteria){
-            case "POPULAR" : subPath = POPULAR_PATH; break;
-            case "TOP_RATED": subPath = TOP_RATED_PATH; break;
+            case POPULAR: subPath = POPULAR_PATH; break;
+            case TOP_RATED: subPath = TOP_RATED_PATH; break;
             default: throw new IllegalArgumentException("Illegal criteria!");
         }
 

@@ -1,5 +1,4 @@
-package com.example.android.popularmovies;
-
+package com.example.android.popularmovies.activity;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.adapter.MoviesAdapter;
 import com.example.android.popularmovies.domain.Movie;
 import com.example.android.popularmovies.utils.MoviesAPIClient;
 import com.example.android.popularmovies.utils.MoviesJsonUtils;
@@ -15,6 +16,9 @@ import com.example.android.popularmovies.utils.MoviesJsonUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main Activity displayed at start-up time.
+ */
 public class MainActivity extends AppCompatActivity {
     private static final int SPAN_COUNT = 3;
     private RecyclerView moviesGridRecyclerView;
@@ -52,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
         moviesGridRecyclerView.setVisibility(View.VISIBLE);
     }
 
-
-    public class FetchMoviesDataTask extends AsyncTask<String, Void, List<Movie>> {
+    /**
+     * Custom task class for fetching movies data from a source.
+     */
+    private class FetchMoviesDataTask extends AsyncTask<String, Void, List<Movie>> {
         @Override
         protected void onPreExecute() {
             mLoadingIndicator.setVisibility(View.VISIBLE);

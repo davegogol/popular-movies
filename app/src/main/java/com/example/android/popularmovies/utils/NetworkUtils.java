@@ -6,7 +6,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-public class NetworkUtils {
+/**
+ * NetworkUtils represents a helper class for forwarding HTTP requests and fetching
+ * data.
+ */
+class NetworkUtils {
+    /**
+     * Returns String HTTP Response Body.
+     * @param url URLto forward the GET HTTP Request
+     * @return String HTTP Response Body
+     * @throws IOException
+     */
     public static String getStringBodyResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
@@ -14,6 +24,7 @@ public class NetworkUtils {
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
             boolean hasInput = scanner.hasNext();
+
             if (hasInput) {
                 return scanner.next();
             } else {
