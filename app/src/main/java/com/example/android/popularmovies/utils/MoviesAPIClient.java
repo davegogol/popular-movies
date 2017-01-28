@@ -1,6 +1,5 @@
 package com.example.android.popularmovies.utils;
 
-
 import android.net.Uri;
 import android.util.Log;
 
@@ -21,7 +20,7 @@ public class MoviesAPIClient {
     final static String KEY_PARAM = "api_key";
     private static final String THE_MOVIE_API_URL = "https://api.themoviedb.org/3/movie/";
     private static final String POPULAR_PATH = "popular";
-    private static final String TOP_RATED_PATH = "topRated";
+    private static final String TOP_RATED_PATH = "top_rated";
     private static final String POPULAR = "POPULAR";
     private static final String TOP_RATED = "TOP_RATED";
 

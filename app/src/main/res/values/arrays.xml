@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="listentries">
+        <item>Popularity</item>
+        <item>Top rated</item>
+    </string-array>
+    <string-array name="listvalues">
+        <item>POPULARITY</item>
+        <item>TOPRATED</item>
+    </string-array>
+</resources>
