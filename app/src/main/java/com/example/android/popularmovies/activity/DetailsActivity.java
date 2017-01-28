@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 import com.example.android.popularmovies.R;
-
 /**
  * Details Activity represents the Activity which empowers
  * the visualization of a single movie details.

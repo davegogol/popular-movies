@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+                android:key="PREF_SORTING"
+                android:title="Sorting preference"
+                android:summary="Select the criteria for displaying the movies."
+                android:entries="@array/listentries"
+                android:entryValues="@array/listvalues" />
+</PreferenceScreen>
