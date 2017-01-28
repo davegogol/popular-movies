@@ -78,8 +78,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String movieTitle = moviesData.get(adapterPosition).getName();
-            moviesAdapterOnClickHandler.onClick(movieTitle);
+            Movie movie = moviesData.get(adapterPosition);
+            moviesAdapterOnClickHandler.onClick(movie);
         }
     }
     /**
@@ -98,8 +98,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public interface MoviesAdapterOnClickHandler{
         /**
          * Triggers action on click event.
-         * @param movieTitle Movie title
+         * @param movie Movie
          */
-        void onClick(String movieTitle);
+        void onClick(Movie movie);
     }
 }

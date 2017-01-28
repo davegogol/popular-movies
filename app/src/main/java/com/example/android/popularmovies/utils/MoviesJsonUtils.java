@@ -15,7 +15,6 @@
  */
 package com.example.android.popularmovies.utils;
 
-
 import com.example.android.popularmovies.domain.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +44,9 @@ public final class MoviesJsonUtils {
             Movie movie = new Movie();
             movie.setName(jsonObject.getString("title"));
             movie.setPosterPath(jsonObject.getString("poster_path"));
+            movie.setReleaseDate(jsonObject.getString("release_date"));
+            movie.setOverview(jsonObject.getString("overview"));
+            movie.setVoteAverage(jsonObject.getDouble("vote_average"));
             parsedMovieData.add(movie);
         }
         return parsedMovieData;
