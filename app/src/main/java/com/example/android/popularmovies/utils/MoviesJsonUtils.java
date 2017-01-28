@@ -13,17 +13,14 @@ import java.util.List;
 public final class MoviesJsonUtils {
     /**
      * Returns movies information from JSON String representation.
-     * @param jsonString JSON Movies information
+     * @param object JSON Movies information
      * @return List of movies
      * @throws JSONException
      */
-    public static List<Movie> getMoviesDataFromJson(String jsonString)
+    public static List<Movie> getMoviesDataFromJson(JSONObject object)
             throws JSONException {
         List<Movie> parsedMovieData = new ArrayList<>();
-
-        JSONObject forecastJson = new JSONObject(jsonString);
-        JSONArray moviesResultsArray = forecastJson.getJSONArray("results");
-
+        JSONArray moviesResultsArray = object.getJSONArray("results");
         for(int i = 0; i < moviesResultsArray.length(); i++){
             JSONObject jsonObject = (JSONObject) moviesResultsArray.get(i);
             Movie movie = new Movie();

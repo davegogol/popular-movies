@@ -15,10 +15,9 @@ import java.util.List;
  * Movies Adapter, custom adapter to bind movies data to the movies recycler view.
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
+    private static final String TAG = MoviesAdapter.class.getSimpleName();
     private List<Movie> moviesData;
     private MoviesAdapterOnClickHandler moviesAdapterOnClickHandler;
-
-    private static final String TAG = MoviesAdapter.class.getSimpleName();
 
     /**
      * Constructor.
@@ -33,12 +32,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         Context context = viewGroup.getContext();
         int layoutIdForGridItem = R.layout.movie_grid_item;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
-        View view = inflater.inflate(layoutIdForGridItem, viewGroup,
-                shouldAttachToParentImmediately);
-        MovieViewHolder viewHolder = new MovieViewHolder(view);
-        return viewHolder;
-
+        View view = inflater.inflate(layoutIdForGridItem, viewGroup, false);
+        return new MovieViewHolder(view);
     }
 
     @Override

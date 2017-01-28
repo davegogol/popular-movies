@@ -5,6 +5,9 @@ import android.util.Log;
 
 import com.example.android.popularmovies.config.AppConfig;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,20 +31,20 @@ public class MoviesAPIClient {
      * Returns the most popular movies as JSON string.
      * @return JSON string
      */
-    public String getPopularMovies(){
+    public JSONObject getPopularMovies() throws JSONException {
         String criteria = POPULAR;
         String popularMovies = getMoviesBy(criteria);
-        return popularMovies;
+        return new JSONObject(popularMovies);
     }
 
     /**
      * Returns the top rated movies as JSON string.
      * @return JSON string
      */
-    public  String getTopRatedMovies(){
+    public  JSONObject getTopRatedMovies() throws JSONException  {
         String criteria = "TOP_RATED";
         String topRatedMovies = getMoviesBy(criteria);
-        return topRatedMovies;
+        return new JSONObject(topRatedMovies);
     }
 
     private String getMoviesBy(String popular) {
@@ -49,8 +52,8 @@ public class MoviesAPIClient {
         URL moviesUrl = buildUrl(popular);
         try {
             movies = getStringBodyResponseFromHttpUrl(moviesUrl);
-        } catch (IOException e) {
-            Log.e(TAG, "IO Exception thrown!", e);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception thrown!", e);
         }
         return movies;
     }

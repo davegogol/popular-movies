@@ -1,11 +1,8 @@
 package com.example.android.popularmovies.activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,8 +17,9 @@ import android.widget.ProgressBar;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapter.MoviesAdapter;
 import com.example.android.popularmovies.domain.Movie;
-import com.example.android.popularmovies.utils.MoviesAPIClient;
-import com.example.android.popularmovies.utils.MoviesJsonUtils;
+import com.example.android.popularmovies.service.MovieServiceImpl;
+import com.example.android.popularmovies.service.exception.MovieServiceException;
+
 import java.util.List;
 
 /**
@@ -35,37 +33,26 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private MoviesAdapter moviesAdapter;
     private ProgressBar mLoadingIndicator;
     private SharedPreferences sharedPreferences;
+    private MovieServiceImpl movieService = new MovieServiceImpl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         moviesGridRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         GridLayoutManager gridLayoutManager =
                 new GridLayoutManager(this, SPAN_COUNT);
         moviesGridRecyclerView.setLayoutManager(gridLayoutManager);
-
         moviesGridRecyclerView.setHasFixedSize(true);
-
         moviesAdapter = new MoviesAdapter(this);
-
         moviesGridRecyclerView.setAdapter(moviesAdapter);
-
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
         loadMoviesData();
     }
 
     private void loadMoviesData() {
         new FetchMoviesDataTask().execute();
-    }
-
-    private void showMoviesDataView() {
-        moviesGridRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -83,21 +70,19 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.settings, menu);
+        inflater.inflate(R.menu.settings_refresh, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            Context context = this;
-            Intent intent = new Intent(context, SettingsActivity.class);
-            startActivity(intent);
-            return true;
-        }else if(id == R.id.action_refresh){
-            loadMoviesData();
+        int itemId = item.getItemId();
+        switch (itemId){
+            case  R.id.action_settings : {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true; }
+            case R.id.action_refresh: loadMoviesData();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -116,19 +101,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         protected List<Movie> doInBackground(String... params) {
             List<Movie> moviesParsedData;
             try {
-                MoviesAPIClient moviesAPIClient = new MoviesAPIClient();
                 String preferenceSorting = sharedPreferences.getString(PREF_SORTING_KEY, "");
                 Log.d(TAG, "Preference selected: " + preferenceSorting);
-                String jsonMoviesResponse;
-
-                if(preferenceSorting.equals("") || "POPULARITY".equals(preferenceSorting)){
-                    jsonMoviesResponse = moviesAPIClient.getPopularMovies();
-                } else {
-                    jsonMoviesResponse = moviesAPIClient.getTopRatedMovies();
-                }
-                moviesParsedData = MoviesJsonUtils
-                        .getMoviesDataFromJson(jsonMoviesResponse);
-            } catch (Exception e) {
+                if(preferenceSorting.equals("") || "POPULARITY".equals(preferenceSorting))
+                    moviesParsedData = movieService.getPopularMovies();
+                else
+                    moviesParsedData = movieService.getTopRatedMovies();
+            } catch (MovieServiceException e) {
                 Log.e(TAG, "Exception thrown!", e);
                 return null;
             }
@@ -137,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         @Override
         protected void onPostExecute(List<Movie> moviesData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            showMoviesDataView();
+            moviesGridRecyclerView.setVisibility(View.VISIBLE);
             moviesAdapter.setMoviesData(moviesData);
         }
     }
