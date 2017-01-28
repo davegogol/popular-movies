@@ -7,27 +7,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.domain.Movie;
-
 import java.util.List;
 
 /**
  * Movies Adapter, custom adapter to bind movies data to the movies recycler view.
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
-
     private List<Movie> moviesData;
+    private MoviesAdapterOnClickHandler moviesAdapterOnClickHandler;
 
     private static final String TAG = MoviesAdapter.class.getSimpleName();
 
     /**
-     * Constructor
-     * @param moviesData Movies data.
+     * Constructor.
+     * @param moviesAdapterOnClickHandler OnClickHandler.
      */
-    public MoviesAdapter(List<Movie> moviesData) {
-        this.moviesData = moviesData;
+    public MoviesAdapter(MoviesAdapterOnClickHandler moviesAdapterOnClickHandler ) {
+        this.moviesAdapterOnClickHandler = moviesAdapterOnClickHandler;
     }
 
     @Override
@@ -51,6 +49,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public int getItemCount() {
+        if (null == moviesData) return 0;
         return moviesData.size();
     }
 
@@ -58,29 +57,49 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
      * Movie View holder, holds movies information for the movie recycler
      * view.
      */
-    class MovieViewHolder extends RecyclerView.ViewHolder {
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView gridItemMovieView;
-
         /**
          * Constructor
-          * @param itemView single movie item view
+         *
+         * @param itemView single movie item view
          */
         MovieViewHolder(View itemView) {
             super(itemView);
             gridItemMovieView = (TextView)
                     itemView.findViewById(R.id.tv_item_movie);
+            gridItemMovieView.setOnClickListener(this);
         }
+
         private void bind(int gridIndex) {
             gridItemMovieView.setText(moviesData.get(gridIndex).getName());
         }
-    }
 
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            Movie movie = moviesData.get(adapterPosition);
+            moviesAdapterOnClickHandler.onClick(movie);
+        }
+    }
     /**
      * Sets movies data.
+     *
      * @param moviesData Movies data
      */
     public void setMoviesData(List<Movie> moviesData) {
         this.moviesData = moviesData;
         notifyDataSetChanged();
+    }
+
+    /**
+     * Interface to handle the recycler view items clicks.
+     */
+    public interface MoviesAdapterOnClickHandler{
+        /**
+         * Triggers action on click event.
+         * @param movie Movie
+         */
+        void onClick(Movie movie);
     }
 }
