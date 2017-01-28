@@ -1,5 +1,6 @@
 package com.example.android.popularmovies.activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,8 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapter.MoviesAdapter;
 import com.example.android.popularmovies.domain.Movie;
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-
         loadMoviesData();
     }
 
@@ -59,8 +57,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     @Override
     public void onClick(String movieTitle) {
         Context context = this;
-        Toast.makeText(context, movieTitle, Toast.LENGTH_SHORT)
-                .show();
+        Intent intent = new Intent(context, DetailsActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, movieTitle);
+        startActivity(intent);
     }
 
     /**
