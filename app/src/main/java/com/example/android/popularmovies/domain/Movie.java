@@ -1,14 +1,34 @@
 package com.example.android.popularmovies.domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Movie Domain object, represents metadata for the movie entity.
  */
-public class Movie {
+public class Movie implements Parcelable {
     private String posterPath;
     private String name;
     private String overview;
     private double voteAverage;
     private String releaseDate;
+
+    /**
+     * Constructor.
+     */
+    public Movie() {}
+
+    /**
+     * Constructor from parcel.
+     * @param in parcel.
+     */
+    private Movie(Parcel in){
+        posterPath = in.readString();
+        name = in.readString();
+        overview = in.readString();
+        releaseDate = in.readString();
+        voteAverage = in.readDouble();
+    }
 
     /**
      * Returns movie overview.
@@ -89,4 +109,33 @@ public class Movie {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(posterPath);
+        parcel.writeString(name);
+        parcel.writeString(overview);
+        parcel.writeString(releaseDate);
+        parcel.writeDouble(voteAverage);
+    }
+
+    /**
+     * Builder class.
+     */
+    public final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel parcel) {
+            return new Movie(parcel);
+        }
+        @Override
+        public Movie[] newArray(int i) {
+            return new Movie[i];
+        }
+    };
+
 }

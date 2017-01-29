@@ -19,7 +19,7 @@ import com.example.android.popularmovies.adapter.MoviesAdapter;
 import com.example.android.popularmovies.domain.Movie;
 import com.example.android.popularmovies.service.MovieServiceImpl;
 import com.example.android.popularmovies.service.exception.MovieServiceException;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +34,12 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private ProgressBar mLoadingIndicator;
     private SharedPreferences sharedPreferences;
     private MovieServiceImpl movieService = new MovieServiceImpl();
+    private List<Movie> moviesList;
 
+    /**
+     * Initial setup at the activity creation time.
+     * @param savedInstanceState Bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +53,36 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         moviesAdapter = new MoviesAdapter(this);
         moviesGridRecyclerView.setAdapter(moviesAdapter);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-        loadMoviesData();
+        if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+            Log.d(TAG, "Retrieve data from source");
+            loadMoviesData();
+        }else{
+            Log.d(TAG, "Retrieve data from Bundle state");
+            moviesList = savedInstanceState.getParcelableArrayList("movies");
+            moviesAdapter.setMoviesData(moviesList);
+        }
+    }
+
+    /**
+     * Saves additional data when the bundle state is stored, between one activity and
+     * another.
+     * @param outState bundle
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "Bundle state stored");
+        outState.putParcelableArrayList("movies", (ArrayList<Movie>) moviesList);
+        super.onSaveInstanceState(outState);
     }
 
     private void loadMoviesData() {
         new FetchMoviesDataTask().execute();
     }
 
+    /**
+     * Handles recycler view single item clicks.
+     * @param movie Movie
+     */
     @Override
     public void onClick(Movie movie) {
         Context context = this;
@@ -67,6 +95,11 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         startActivity(intent);
     }
 
+    /**
+     * Inflates the menu items for the activity menu.
+     * @param menu Activity menu.
+     * @return operation status
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -74,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         return true;
     }
 
+    /**
+     * Handles menu items clicks.
+     * @param item Clicked item.
+     * @return operation status
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -117,7 +155,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         protected void onPostExecute(List<Movie> moviesData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             moviesGridRecyclerView.setVisibility(View.VISIBLE);
-            moviesAdapter.setMoviesData(moviesData);
+            moviesList = moviesData;
+            moviesAdapter.setMoviesData(moviesList);
         }
     }
 }
