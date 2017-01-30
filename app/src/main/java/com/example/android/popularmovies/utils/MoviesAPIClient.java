@@ -31,7 +31,7 @@ public class MoviesAPIClient {
      * Returns the most popular movies as JSON string.
      * @return JSON string
      */
-    public JSONObject getPopularMovies() throws JSONException {
+    public JSONObject getPopularMovies() throws JSONException, IOException {
         String criteria = POPULAR;
         String popularMovies = getMoviesBy(criteria);
         return new JSONObject(popularMovies);
@@ -41,20 +41,18 @@ public class MoviesAPIClient {
      * Returns the top rated movies as JSON string.
      * @return JSON string
      */
-    public  JSONObject getTopRatedMovies() throws JSONException  {
+    public  JSONObject getTopRatedMovies() throws JSONException, IOException {
         String criteria = "TOP_RATED";
         String topRatedMovies = getMoviesBy(criteria);
         return new JSONObject(topRatedMovies);
     }
 
-    private String getMoviesBy(String popular) {
+    private String getMoviesBy(String popular) throws IOException {
         String movies = "";
         URL moviesUrl = buildUrl(popular);
-        try {
-            movies = getStringBodyResponseFromHttpUrl(moviesUrl);
-        } catch (Exception e) {
-            Log.e(TAG, "Exception thrown!", e);
-        }
+
+        movies = getStringBodyResponseFromHttpUrl(moviesUrl);
+
         return movies;
     }
 
