@@ -17,7 +17,7 @@ It also displays movie details such as Title, Overview, Average rate and Release
 
     This view displays movie details such as Title, Overview, Average rate and Release Date.
 
-* No internet [no_internet.png](/img/no_intenet.png)
+* No internet [no_internet.png](/img/no_internet.png)
 
    This view is displayed in case of no internet connection.
 
