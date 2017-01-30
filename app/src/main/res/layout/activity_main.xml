@@ -2,16 +2,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_movies"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </android.support.v7.widget.RecyclerView>
-
     <ProgressBar
         android:id="@+id/pb_loading_indicator"
         android:layout_height="42dp"
         android:layout_width="42dp"
         android:layout_gravity="center"
         android:visibility="invisible" />
+    <GridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="150dp"
+        android:verticalSpacing="0dp"
+        android:horizontalSpacing="0dp"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:id="@+id/movies_grid">
+    </GridView>
 </FrameLayout>

@@ -6,16 +6,18 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.adapter.MoviesAdapter;
+import com.example.android.popularmovies.adapter.MovieAdapter;
 import com.example.android.popularmovies.domain.Movie;
 import com.example.android.popularmovies.service.MovieServiceImpl;
 import com.example.android.popularmovies.service.exception.MovieServiceException;
@@ -25,16 +27,15 @@ import java.util.List;
 /**
  * Main Activity displayed at start-up time.
  */
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.MoviesAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity{
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int SPAN_COUNT = 3;
     private static final String PREF_SORTING_KEY = "PREF_SORTING";
-    private RecyclerView moviesGridRecyclerView;
-    private MoviesAdapter moviesAdapter;
     private ProgressBar mLoadingIndicator;
     private SharedPreferences sharedPreferences;
     private MovieServiceImpl movieService = new MovieServiceImpl();
     private List<Movie> moviesList;
+    private MovieAdapter movieAdapter;
+    private GridView gridView;
 
     /**
      * Initial setup at the activity creation time.
@@ -45,22 +46,33 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        moviesGridRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
-        GridLayoutManager gridLayoutManager =
-                new GridLayoutManager(this, SPAN_COUNT);
-        moviesGridRecyclerView.setLayoutManager(gridLayoutManager);
-        moviesGridRecyclerView.setHasFixedSize(true);
-        moviesAdapter = new MoviesAdapter(this);
-        moviesGridRecyclerView.setAdapter(moviesAdapter);
+        gridView = (GridView) findViewById(R.id.movies_grid);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        movieAdapter = new MovieAdapter(this);
+        gridView.setAdapter(movieAdapter);
+
         if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
             Log.d(TAG, "Retrieve data from source");
             loadMoviesData();
+
         }else{
             Log.d(TAG, "Retrieve data from Bundle state");
             moviesList = savedInstanceState.getParcelableArrayList("movies");
-            moviesAdapter.setMoviesData(moviesList);
+            movieAdapter.addAll(moviesList);
         }
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+             @Override
+             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                 Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                 intent.putExtra("movie.title", moviesList.get(position).getName());
+                 intent.putExtra("movie.poster", moviesList.get(position).getPosterPath());
+                 intent.putExtra("movie.release_date", moviesList.get(position).getReleaseDate());
+                 intent.putExtra("movie.overview", moviesList.get(position).getOverview());
+                 intent.putExtra("movie.average_rate", String.valueOf(moviesList.get(position).getVoteAverage()));
+                 startActivity(intent);
+             }
+        });
     }
 
     /**
@@ -77,22 +89,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     private void loadMoviesData() {
         new FetchMoviesDataTask().execute();
-    }
-
-    /**
-     * Handles recycler view single item clicks.
-     * @param movie Movie
-     */
-    @Override
-    public void onClick(Movie movie) {
-        Context context = this;
-        Intent intent = new Intent(context, DetailsActivity.class);
-        intent.putExtra("movie.title", movie.getName());
-        intent.putExtra("movie.poster", movie.getPosterPath());
-        intent.putExtra("movie.release_date", movie.getReleaseDate());
-        intent.putExtra("movie.overview", movie.getOverview());
-        intent.putExtra("movie.average_rate", String.valueOf(movie.getVoteAverage()));
-        startActivity(intent);
     }
 
     /**
@@ -129,14 +125,23 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
      * Custom task class for fetching movies data from a source.
      */
     private class FetchMoviesDataTask extends AsyncTask<String, Void, List<Movie>> {
+
+        private static final int TIME_IN_MILLIS = 500;
+
         @Override
         protected void onPreExecute() {
-            moviesGridRecyclerView.setVisibility(View.INVISIBLE);
+            gridView .setVisibility(View.INVISIBLE);
             mLoadingIndicator.setVisibility(View.VISIBLE);
+            movieAdapter.clear();
             super.onPreExecute();
         }
         @Override
         protected List<Movie> doInBackground(String... params) {
+            try {
+                Thread.sleep(TIME_IN_MILLIS);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Exception thrown!", e);
+            }
             List<Movie> moviesParsedData;
             try {
                 String preferenceSorting = sharedPreferences.getString(PREF_SORTING_KEY, "");
@@ -154,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
         @Override
         protected void onPostExecute(List<Movie> moviesData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            moviesGridRecyclerView.setVisibility(View.VISIBLE);
+            gridView.setVisibility(View.VISIBLE);
             moviesList = moviesData;
-            moviesAdapter.setMoviesData(moviesList);
+            movieAdapter.addAll(moviesList);
         }
     }
 }
