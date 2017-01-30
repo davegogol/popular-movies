@@ -8,9 +8,31 @@ It also displays movie details such as Title, Overview, Average rate and Release
 
 ##UI
 
-![home](/img/home.png)
-![movie_details](/img/movie_details.png)
-![no_internet](/img/no_intenet.png)
+* Home (/img/home.png)
+
+    This view displays the movies. User also can refresh the list or
+    access to the settings.
+
+* Movie Details  (/img/movie_details.png)
+
+    This view displays movie details such as Title, Overview, Average rate and Release Date.
+
+* No internet(/img/no_intenet.png)
+
+   This view is displayed in case of no internet connection.
+
+##Run
+
+Min SDK version: 15
+
+Target SDK version: Android 7.1.1 (Nougat)
+
+###Configuration
+
+* Set up the "Themoviedb" API key into [AppConfig.java](/app/src/main/java/com/example/android/popularmovies/config/AppConfig.java)
+* Build with Gradle and deploy to a connected device/emulator.
+
+
 
 
 
