@@ -1,5 +1,4 @@
 package com.example.android.popularmovies.activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -13,8 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapter.MovieAdapter;
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity{
     private List<Movie> moviesList;
     private MovieAdapter movieAdapter;
     private GridView gridView;
+    private ImageView errorImageView;
 
     /**
      * Initial setup at the activity creation time.
@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         gridView = (GridView) findViewById(R.id.movies_grid);
+        errorImageView = (ImageView) findViewById(R.id.error);
+
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         movieAdapter = new MovieAdapter(this);
         gridView.setAdapter(movieAdapter);
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity{
         if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
             Log.d(TAG, "Retrieve data from source");
             loadMoviesData();
-
         }else{
             Log.d(TAG, "Retrieve data from Bundle state");
             moviesList = savedInstanceState.getParcelableArrayList("movies");
@@ -125,12 +126,14 @@ public class MainActivity extends AppCompatActivity{
      * Custom task class for fetching movies data from a source.
      */
     private class FetchMoviesDataTask extends AsyncTask<String, Void, List<Movie>> {
-
         private static final int TIME_IN_MILLIS = 500;
+        private boolean internetState = true;
 
         @Override
         protected void onPreExecute() {
+            internetState = true;
             gridView .setVisibility(View.INVISIBLE);
+            errorImageView.setVisibility(View.INVISIBLE);
             mLoadingIndicator.setVisibility(View.VISIBLE);
             movieAdapter.clear();
             super.onPreExecute();
@@ -152,16 +155,23 @@ public class MainActivity extends AppCompatActivity{
                     moviesParsedData = movieService.getTopRatedMovies();
             } catch (MovieServiceException e) {
                 Log.e(TAG, "Exception thrown!", e);
+                if(e.getTag().equals("NO_INTERNET")) internetState = false;
                 return null;
             }
             return moviesParsedData;
         }
         @Override
         protected void onPostExecute(List<Movie> moviesData) {
+            if(moviesData != null) {
+                gridView.setVisibility(View.VISIBLE);
+                moviesList = moviesData;
+                movieAdapter.addAll(moviesList);
+            }
+            if(!internetState){
+                errorImageView.setVisibility(View.VISIBLE);
+            }
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            gridView.setVisibility(View.VISIBLE);
-            moviesList = moviesData;
-            movieAdapter.addAll(moviesList);
+
         }
     }
 }

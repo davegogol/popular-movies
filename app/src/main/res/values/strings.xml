@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PopularMovies</string>
+    <string name="details_overview_header">Overview</string>
+    <string name="details_title_header">Title</string>
+    <string name="details_average_rate_header">Average rate</string>
+    <string name="details_average_release_date_header">Release Date</string>
 </resources>

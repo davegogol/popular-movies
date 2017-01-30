@@ -26,7 +26,7 @@
             android:padding="8dp"
             android:textSize="26sp"
             android:textStyle="bold"
-            android:text="Title" />
+            android:text="@string/details_title_header" />
         <TextView
             android:id="@+id/details_movie_title"
             android:textSize="26sp"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:textStyle="bold"
-            android:text="Overview" />
+            android:text="@string/details_overview_header" />
         <TextView
             android:id="@+id/details_movie_overview"
             android:textSize="26sp"
@@ -62,7 +62,7 @@
                 android:textSize="26sp"
                 android:textStyle="bold"
                 android:padding="8dp"
-                android:text="Average rate" />
+                android:text="@string/details_average_rate_header" />
         <TextView
         android:id="@+id/details_movie_average_rate"
         android:textSize="26sp"
@@ -75,14 +75,13 @@
             android:orientation="vertical"
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
-
             <TextView
                 android:layout_height="wrap_content"
                 android:textSize="26sp"
                 android:layout_width="wrap_content"
                 android:padding="8dp"
                 android:textStyle="bold"
-                android:text="Realease Date" />
+                android:text="@string/details_average_release_date_header" />
         <TextView
         android:textSize="26sp"
             android:padding="8dp"

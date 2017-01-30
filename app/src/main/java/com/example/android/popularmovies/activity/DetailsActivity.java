@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
  * the visualization of a single movie details.
  */
 public class DetailsActivity extends AppCompatActivity {
+    private static final String IMAGE_API = "http://image.tmdb.org/t/p/w150";
     private TextView movieTitleTextView;
     private TextView movieOverviewTextView;
     private TextView movieReleaseDateTextView;
@@ -41,7 +42,7 @@ public class DetailsActivity extends AppCompatActivity {
             movieAverageRateTextView.setText(averageRate);
             Picasso.
                     with(this).
-                    load("http://image.tmdb.org/t/p/w150"+ poster).
+                    load(IMAGE_API + poster).
                     into(moviePosterImageView);
 
         }

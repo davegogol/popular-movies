@@ -8,6 +8,7 @@ import com.example.android.popularmovies.utils.MoviesAPIClient;
 import com.example.android.popularmovies.utils.MoviesJsonUtils;
 import org.json.JSONObject;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -22,8 +23,7 @@ public class MovieServiceImpl implements MovieService {
             JSONObject moviesJson = moviesAPIClient.getPopularMovies();
             moviesList = MoviesJsonUtils.getMoviesDataFromJson(moviesJson);
         }catch (Exception e){
-            Log.e(TAG, "Exception thrown!", e);
-            throw new MovieServiceException();
+            handleException(e);
         }
         return moviesList;
     }
@@ -33,9 +33,17 @@ public class MovieServiceImpl implements MovieService {
             JSONObject moviesJson = moviesAPIClient.getTopRatedMovies();
             moviesList = MoviesJsonUtils.getMoviesDataFromJson(moviesJson);
         }catch (Exception e){
-            Log.e(TAG, "Exception thrown!", e);
-            throw new MovieServiceException();
+            handleException(e);
         }
         return moviesList;
+    }
+
+    private void handleException(Exception e) throws MovieServiceException {
+        Log.e(TAG, "Exception thrown!", e);
+        String exceptionTag = "";
+        if(e instanceof UnknownHostException){
+            exceptionTag = "NO_INTERNET";
+        }
+        throw new MovieServiceException(exceptionTag);
     }
 }
