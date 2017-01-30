@@ -8,16 +8,16 @@ It also displays movie details such as Title, Overview, Average rate and Release
 
 ##UI
 
-* Home (/img/home.png)
+* Home [home.png](/img/home.png)
 
     This view displays the movies. User also can refresh the list or
     access to the settings.
 
-* Movie Details  (/img/movie_details.png)
+* Movie Details  [movie_details.png](/img/movie_details.png)
 
     This view displays movie details such as Title, Overview, Average rate and Release Date.
 
-* No internet(/img/no_intenet.png)
+* No internet [no_internet.png](/img/no_intenet.png)
 
    This view is displayed in case of no internet connection.
 
