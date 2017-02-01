@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity{
         }else{
             Log.d(TAG, "Retrieve data from Bundle state");
             moviesList = savedInstanceState.getParcelableArrayList("movies");
-            movieAdapter.addAll(moviesList);
+            if(moviesList != null)
+                movieAdapter.addAll(moviesList);
         }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
