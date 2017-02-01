@@ -4,8 +4,8 @@
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/movie_img"
-        android:layout_width="210dp"
-        android:layout_height="360dp"
+        android:layout_width="@dimen/image_layout_width"
+        android:layout_height="@dimen/image_layout_height"
         android:scaleType="centerCrop"   >
     </ImageView>
 </FrameLayout>

@@ -13,7 +13,7 @@
     <ImageView
         android:id="@+id/movie_single_img"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="@dimen/image_layout_height"
         android:scaleType="centerCrop" />
     </LinearLayout>
     <LinearLayout
@@ -23,14 +23,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textSize="26sp"
+            android:padding="@dimen/padding_medium"
+            android:textSize="@dimen/text_sz_medium"
             android:textStyle="bold"
             android:text="@string/details_title_header" />
         <TextView
             android:id="@+id/details_movie_title"
-            android:textSize="26sp"
-            android:padding="8dp"
+            android:textSize="@dimen/text_sz_medium"
+            android:padding="@dimen/padding_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -40,15 +40,15 @@
         android:layout_width="match_parent">
         <TextView
             android:layout_width="wrap_content"
-            android:textSize="26sp"
+            android:textSize="@dimen/text_sz_medium"
             android:layout_height="wrap_content"
-            android:padding="8dp"
+            android:padding="@dimen/padding_medium"
             android:textStyle="bold"
             android:text="@string/details_overview_header" />
         <TextView
             android:id="@+id/details_movie_overview"
-            android:textSize="26sp"
-            android:padding="8dp"
+            android:textSize="@dimen/text_sz_medium"
+            android:padding="@dimen/padding_medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -59,14 +59,14 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textSize="26sp"
+                android:textSize="@dimen/text_sz_medium"
                 android:textStyle="bold"
-                android:padding="8dp"
+                android:padding="@dimen/padding_medium"
                 android:text="@string/details_average_rate_header" />
         <TextView
         android:id="@+id/details_movie_average_rate"
-        android:textSize="26sp"
-            android:padding="8dp"
+        android:textSize="@dimen/text_sz_medium"
+            android:padding="@dimen/padding_medium"
             android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -77,14 +77,14 @@
             android:layout_width="match_parent">
             <TextView
                 android:layout_height="wrap_content"
-                android:textSize="26sp"
+                android:textSize="@dimen/text_sz_medium"
                 android:layout_width="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/padding_medium"
                 android:textStyle="bold"
                 android:text="@string/details_average_release_date_header" />
         <TextView
-        android:textSize="26sp"
-            android:padding="8dp"
+        android:textSize="@dimen/text_sz_medium"
+            android:padding="@dimen/padding_medium"
             android:id="@+id/details_movie_release_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
