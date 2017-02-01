@@ -13,3 +13,4 @@ gradle/
 /app/libs/
 /app/*.iml
 /app/proguard-rules.pro
+gradle.properties

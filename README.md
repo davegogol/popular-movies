@@ -29,7 +29,7 @@ Target SDK version: Android 7.1.1 (Nougat)
 
 ###Configuration
 
-* Set up the "Themoviedb" API key into [AppConfig.java](/app/src/main/java/com/example/android/popularmovies/config/AppConfig.java)
+* Set up the "Themoviedb" API key into [gradle.properties](/gradle.properties)
 * Build with Gradle and deploy to a connected device/emulator.
 
 
