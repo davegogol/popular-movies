@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity{
     private MovieAdapter movieAdapter;
     private GridView gridView;
     private ImageView errorImageView;
+    private String shownSortingPreference = "";
 
     /**
      * Initial setup at the activity creation time.
@@ -86,6 +87,17 @@ public class MainActivity extends AppCompatActivity{
         Log.d(TAG, "Bundle state stored");
         outState.putParcelableArrayList("movies", (ArrayList<Movie>) moviesList);
         super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String preferenceSorting = sharedPreferences.getString(PREF_SORTING_KEY, "");
+        if(!preferenceSorting.equals(shownSortingPreference) || moviesList.isEmpty()){
+            Log.d(TAG, "Sorting preference was changed.");
+            loadMoviesData();
+        }
     }
 
     private void loadMoviesData() {
@@ -147,9 +159,10 @@ public class MainActivity extends AppCompatActivity{
             }
             List<Movie> moviesParsedData;
             try {
-                String preferenceSorting = sharedPreferences.getString(PREF_SORTING_KEY, "");
-                Log.d(TAG, "Preference selected: " + preferenceSorting);
-                if(preferenceSorting.equals("") || "POPULARITY".equals(preferenceSorting))
+                String selectedSortingPreference = sharedPreferences.getString(PREF_SORTING_KEY, "");
+                shownSortingPreference = selectedSortingPreference;
+                Log.d(TAG, "Preference selected: " + selectedSortingPreference);
+                if(selectedSortingPreference.equals("") || "POPULARITY".equals(selectedSortingPreference))
                     moviesParsedData = movieService.getPopularMovies();
                 else
                     moviesParsedData = movieService.getTopRatedMovies();
