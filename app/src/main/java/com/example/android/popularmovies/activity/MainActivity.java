@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity{
     public void onResume() {
         super.onResume();
         String preferenceSorting = sharedPreferences.getString(PREF_SORTING_KEY, "");
-        if(!preferenceSorting.equals(shownSortingPreference) || moviesList.isEmpty()){
+        if(!preferenceSorting.equals(shownSortingPreference) || moviesList != null){
             Log.d(TAG, "Sorting preference was changed.");
             loadMoviesData();
         }
