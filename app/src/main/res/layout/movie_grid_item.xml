@@ -6,6 +6,6 @@
         android:id="@+id/movie_img"
         android:layout_width="@dimen/image_layout_width"
         android:layout_height="@dimen/image_layout_height"
-        android:scaleType="centerCrop"   >
+        android:scaleType="centerCrop">
     </ImageView>
 </FrameLayout>
