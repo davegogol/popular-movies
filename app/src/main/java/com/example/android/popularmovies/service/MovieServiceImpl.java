@@ -17,10 +17,12 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService {
     private static final String TAG = MovieServiceImpl.class.getSimpleName();
     private MoviesAPIClient moviesAPIClient = new MoviesAPIClient();
+
     public List<Movie> getPopularMovies() throws MovieServiceException {
         List<Movie> moviesList = null;
         try {
             JSONObject moviesJson = moviesAPIClient.getPopularMovies();
+            Log.d(TAG, "< movies json: " + moviesJson.toString());
             moviesList = MoviesJsonUtils.getMoviesDataFromJson(moviesJson);
         }catch (Exception e){
             handleException(e);
@@ -31,6 +33,7 @@ public class MovieServiceImpl implements MovieService {
         List<Movie> moviesList = null;
         try {
             JSONObject moviesJson = moviesAPIClient.getTopRatedMovies();
+            Log.d(TAG, "< movies json: " + moviesJson.toString());
             moviesList = MoviesJsonUtils.getMoviesDataFromJson(moviesJson);
         }catch (Exception e){
             handleException(e);

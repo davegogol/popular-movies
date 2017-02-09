@@ -1,5 +1,7 @@
 package com.example.android.popularmovies.utils;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -11,6 +13,7 @@ import java.util.Scanner;
  * data.
  */
 class NetworkUtils {
+    private static final String TAG = NetworkUtils.class.getSimpleName();
     /**
      * Returns String HTTP Response Body.
      * @param url URLto forward the GET HTTP Request
@@ -26,7 +29,9 @@ class NetworkUtils {
             boolean hasInput = scanner.hasNext();
 
             if (hasInput) {
-                return scanner.next();
+                String response = scanner.next();
+                Log.v(TAG, "< HTTP Response: " + response);
+                return response;
             } else {
                 return null;
             }

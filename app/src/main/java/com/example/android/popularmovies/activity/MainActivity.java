@@ -1,7 +1,7 @@
 package com.example.android.popularmovies.activity;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,14 +14,17 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapter.MovieAdapter;
 import com.example.android.popularmovies.domain.Movie;
 import com.example.android.popularmovies.service.MovieServiceImpl;
-import com.example.android.popularmovies.service.exception.MovieServiceException;
-import java.util.ArrayList;
-import java.util.List;
+import com.example.android.popularmovies.task.AsyncTaskCompleteListener;
+import com.example.android.popularmovies.task.FetchMyDataTask;
+
 
 /**
  * Main Activity displayed at start-up time.
@@ -95,14 +98,17 @@ public class MainActivity extends AppCompatActivity{
     public void onResume() {
         super.onResume();
         String preferenceSorting = sharedPreferences.getString(PREF_SORTING_KEY, "");
-        if(!preferenceSorting.equals(shownSortingPreference) || moviesList != null){
+        if(!preferenceSorting.equals(shownSortingPreference) && moviesList != null){
             Log.d(TAG, "Sorting preference was changed.");
             loadMoviesData();
         }
     }
 
     private void loadMoviesData() {
-        new FetchMoviesDataTask().execute();
+        String selectedSortingPreference = sharedPreferences.getString(PREF_SORTING_KEY, "");
+        shownSortingPreference = selectedSortingPreference;
+        new FetchMyDataTask(movieService, new FetchMyDataTaskCompleteListener()).
+                execute(selectedSortingPreference);
     }
 
     /**
@@ -135,57 +141,29 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Custom task class for fetching movies data from a source.
-     */
-    private class FetchMoviesDataTask extends AsyncTask<String, Void, List<Movie>> {
-        private static final int TIME_IN_MILLIS = 500;
-        private boolean internetState = true;
 
+    public class FetchMyDataTaskCompleteListener implements AsyncTaskCompleteListener<List<Movie>,
+            Map<String,Object>> {
         @Override
-        protected void onPreExecute() {
-            internetState = true;
-            gridView .setVisibility(View.INVISIBLE);
+        public void onPreTaskExecute() {
+            gridView.setVisibility(View.INVISIBLE);
             errorImageView.setVisibility(View.INVISIBLE);
+
             mLoadingIndicator.setVisibility(View.VISIBLE);
             movieAdapter.clear();
-            super.onPreExecute();
         }
+
         @Override
-        protected List<Movie> doInBackground(String... params) {
-            try {
-                Thread.sleep(TIME_IN_MILLIS);
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Exception thrown!", e);
-            }
-            List<Movie> moviesParsedData;
-            try {
-                String selectedSortingPreference = sharedPreferences.getString(PREF_SORTING_KEY, "");
-                shownSortingPreference = selectedSortingPreference;
-                Log.d(TAG, "Preference selected: " + selectedSortingPreference);
-                if(selectedSortingPreference.equals("") || "POPULARITY".equals(selectedSortingPreference))
-                    moviesParsedData = movieService.getPopularMovies();
-                else
-                    moviesParsedData = movieService.getTopRatedMovies();
-            } catch (MovieServiceException e) {
-                Log.e(TAG, "Exception thrown!", e);
-                if(e.getTag().equals("NO_INTERNET")) internetState = false;
-                return null;
-            }
-            return moviesParsedData;
-        }
-        @Override
-        protected void onPostExecute(List<Movie> moviesData) {
-            if(moviesData != null) {
+        public void onTaskComplete(List<Movie> listMovieResult, Map<String,Object> properties ) {
+            if(listMovieResult != null) {
                 gridView.setVisibility(View.VISIBLE);
-                moviesList = moviesData;
+                moviesList = listMovieResult;
                 movieAdapter.addAll(moviesList);
             }
-            if(!internetState){
+            if(!(Boolean) properties.get("internetState")){
                 errorImageView.setVisibility(View.VISIBLE);
             }
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-
         }
     }
 }
