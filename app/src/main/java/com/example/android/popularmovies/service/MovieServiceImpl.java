@@ -28,6 +28,7 @@ public class MovieServiceImpl implements MovieService {
         try {
             JSONObject moviesJson = moviesAPIClient.getPopularMovies();
             moviesList = MoviesJsonUtils.getMovies(moviesJson);
+            Log.d(TAG, "< movies json: " + moviesJson.toString());
         }catch (Exception e){
             handleException(e);
         }
@@ -40,6 +41,7 @@ public class MovieServiceImpl implements MovieService {
         try {
             JSONObject moviesJson = moviesAPIClient.getTopRatedMovies();
             moviesList = MoviesJsonUtils.getMovies(moviesJson);
+            Log.d(TAG, "< movies json: " + moviesJson.toString());
         }catch (Exception e){
             handleException(e);
         }
