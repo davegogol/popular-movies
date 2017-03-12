@@ -23,7 +23,7 @@ import com.example.android.popularmovies.adapter.MovieAdapter;
 import com.example.android.popularmovies.domain.Movie;
 import com.example.android.popularmovies.service.MovieServiceImpl;
 import com.example.android.popularmovies.task.AsyncTaskCompleteListener;
-import com.example.android.popularmovies.task.FetchMyDataTask;
+import com.example.android.popularmovies.task.FetchMovieDataTask;
 
 
 /**
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity{
              @Override
              public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                  Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                 intent.putExtra("movie.id", moviesList.get(position).getId());
                  intent.putExtra("movie.title", moviesList.get(position).getName());
                  intent.putExtra("movie.poster", moviesList.get(position).getPosterPath());
                  intent.putExtra("movie.release_date", moviesList.get(position).getReleaseDate());
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity{
     private void loadMoviesData() {
         String selectedSortingPreference = sharedPreferences.getString(PREF_SORTING_KEY, "");
         shownSortingPreference = selectedSortingPreference;
-        new FetchMyDataTask(movieService, new FetchMyDataTaskCompleteListener()).
+        new FetchMovieDataTask(movieService, new FetchMyDataTaskCompleteListener()).
                 execute(selectedSortingPreference);
     }
 

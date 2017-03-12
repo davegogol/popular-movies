@@ -60,6 +60,7 @@ public class MoviesAPIClient {
         Uri builtUri = Uri.parse(THE_MOVIE_API_URL).buildUpon()
                 .appendPath(movieId)
                 .appendPath(TRAILERS_SUB_PATH)
+                .appendQueryParameter(KEY_PARAM, AppConfig.KEY)
                 .build();
 
         URL url = buildUrl(builtUri);
@@ -77,6 +78,7 @@ public class MoviesAPIClient {
         Uri builtUri = Uri.parse(THE_MOVIE_API_URL).buildUpon()
                 .appendPath(movieId)
                 .appendPath(REVIEWS_SUB_PATH)
+                .appendQueryParameter(KEY_PARAM, AppConfig.KEY)
                 .build();
 
         URL url = buildUrl(builtUri);

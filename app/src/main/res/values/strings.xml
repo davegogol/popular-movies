@@ -4,4 +4,8 @@
     <string name="details_title_header">Title</string>
     <string name="details_average_rate_header">Average rate</string>
     <string name="details_average_release_date_header">Release Date</string>
+    <string name="trailers_header">Trailers:</string>
+    <string name="reviews_header">Reviews:</string>
+    <string name="no_trailers">No results</string>
+    <string name="no_reviews">No results</string>
 </resources>
