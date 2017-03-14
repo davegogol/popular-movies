@@ -9,54 +9,54 @@
         android:orientation="vertical"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <ImageView
-            android:id="@+id/movie_single_img"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/image_layout_height"
-            android:scaleType="centerCrop" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_medium"
-            android:textSize="@dimen/text_sz_medium"
-            android:textStyle="bold"
-            android:text="@string/details_title_header" />
-        <TextView
-            android:id="@+id/details_movie_title"
-            android:textSize="@dimen/text_sz_medium"
-            android:padding="@dimen/padding_medium"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent">
+            <ImageView
+                android:id="@+id/movie_single_img"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/image_layout_height"
+                android:scaleType="centerCrop" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            tools:text="Interstellar"/>
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <TextView
-            android:layout_width="wrap_content"
-            android:textSize="@dimen/text_sz_medium"
+            android:layout_width="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_medium"
+                android:textSize="@dimen/text_sz_medium"
+                android:textStyle="bold"
+                android:text="@string/details_title_header" />
+            <TextView
+                android:id="@+id/details_movie_title"
+                android:textSize="@dimen/text_sz_medium"
+                android:padding="@dimen/padding_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Interstellar"/>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_medium"
-            android:textStyle="bold"
-            android:text="@string/details_overview_header" />
-        <TextView
-            android:id="@+id/details_movie_overview"
-            android:textSize="@dimen/text_sz_medium"
-            android:padding="@dimen/padding_medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Interstellar chronicles the adventures of a group..."
-            />
-    </LinearLayout>
+            android:layout_width="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:textSize="@dimen/text_sz_medium"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_medium"
+                android:textStyle="bold"
+                android:text="@string/details_overview_header" />
+            <TextView
+                android:id="@+id/details_movie_overview"
+                android:textSize="@dimen/text_sz_medium"
+                android:padding="@dimen/padding_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Interstellar chronicles the adventures of a group..."
+                />
+        </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
             android:layout_height="wrap_content"
@@ -68,13 +68,13 @@
                 android:textStyle="bold"
                 android:padding="@dimen/padding_medium"
                 android:text="@string/details_average_rate_header" />
-        <TextView
-        android:id="@+id/details_movie_average_rate"
-        android:textSize="@dimen/text_sz_medium"
-            android:padding="@dimen/padding_medium"
-            android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-            tools:text="7.5"/>
+            <TextView
+            android:id="@+id/details_movie_average_rate"
+            android:textSize="@dimen/text_sz_medium"
+                android:padding="@dimen/padding_medium"
+                android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                tools:text="7.5"/>
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -94,6 +94,80 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="2016-11-10"/>
-    </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+            android:id="@+id/trailers_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/nointernet"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+            <ProgressBar
+                android:id="@+id/pb_loading_trailers_indicator"
+                android:layout_height="@dimen/indicator_layout_height"
+                android:layout_width="@dimen/indicator_layout_width"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_medium"
+                android:textSize="@dimen/text_sz_medium"
+                android:textStyle="bold"
+                android:text="@string/trailers_header" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_trailers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/no_trailers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_medium"
+                android:textSize="@dimen/text_sz_medium"
+                android:visibility="invisible"
+                android:text="@string/no_trailers" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                android:id="@+id/pb_loading_reviews_indicator"
+                android:layout_height="@dimen/indicator_layout_height"
+                android:layout_width="@dimen/indicator_layout_width"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+            <ImageView
+                android:id="@+id/reviews_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/nointernet"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_medium"
+                android:textSize="@dimen/text_sz_medium"
+                android:textStyle="bold"
+                android:text="@string/reviews_header" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/no_reviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_medium"
+                android:textSize="@dimen/text_sz_medium"
+                android:visibility="invisible"
+                android:text="@string/no_reviews" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

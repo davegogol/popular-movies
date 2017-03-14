@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * Movie Domain object, represents metadata for the movie entity.
  */
 public class Movie implements Parcelable {
+    private String id;
     private String posterPath;
     private String name;
     private String overview;
@@ -100,6 +101,22 @@ public class Movie implements Parcelable {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Getter for id
+     * @return id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Setter for id
+     * @param id
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**

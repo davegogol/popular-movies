@@ -27,6 +27,7 @@ public final class MoviesJsonUtils {
         for(int i = 0; i < moviesResultsArray.length(); i++){
             JSONObject jsonObject = (JSONObject) moviesResultsArray.get(i);
             Movie movie = new Movie();
+            movie.setId(jsonObject.getString("id"));
             movie.setName(jsonObject.getString("title"));
             movie.setPosterPath(jsonObject.getString("poster_path"));
             movie.setReleaseDate(jsonObject.getString("release_date"));

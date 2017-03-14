@@ -3,7 +3,6 @@ package com.example.android.popularmovies.task;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +15,8 @@ import com.example.android.popularmovies.service.exception.MovieServiceException
 /**
  * This class represents an AsyncTask definition for retrieving movie data from a source.
  */
-public class FetchMyDataTask extends AsyncTask<String, Void, List<Movie>> {
-    private static final String TAG = FetchMyDataTask.class.getSimpleName();
+public class FetchMovieDataTask extends AsyncTask<String, Void, List<Movie>> {
+    private static final String TAG = FetchMovieDataTask.class.getSimpleName();
 
     private MovieService movieService;
     private static final int TIME_IN_MILLIS = 500;
@@ -29,8 +28,8 @@ public class FetchMyDataTask extends AsyncTask<String, Void, List<Movie>> {
     private String selectedSortingPreference;
     private AsyncTaskCompleteListener<List<Movie>, Map<String, Object>> listener;
 
-    public FetchMyDataTask(MovieService movieService,
-                           AsyncTaskCompleteListener<List<Movie>, Map<String, Object>> listener) {
+    public FetchMovieDataTask(MovieService movieService,
+                              AsyncTaskCompleteListener<List<Movie>, Map<String, Object>> listener) {
         this.movieService = movieService;
         this.listener = listener;
     }
