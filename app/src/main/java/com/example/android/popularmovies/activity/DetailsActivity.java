@@ -3,6 +3,7 @@ package com.example.android.popularmovies.activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,7 +38,8 @@ import java.util.Map;
  * Details Activity represents the Activity which empowers
  * the visualization of a single movie details.
  */
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler {
+    public static final String YOUTUBE_URL = "http://www.youtube.com/watch?v=";
     private final String LOG = this.getClass().getSimpleName();
     private static final String IMAGE_API = "http://image.tmdb.org/t/p/w150";
     private TextView movieTitleTextView;
@@ -140,7 +142,7 @@ public class DetailsActivity extends AppCompatActivity {
         mTrailersRecyclerView.setLayoutManager(layoutManager);
         mTrailersRecyclerView.setHasFixedSize(true);
 
-        mTrailerAdapter = new TrailerAdapter();
+        mTrailerAdapter = new TrailerAdapter(this);
         mTrailersRecyclerView.setAdapter(mTrailerAdapter);
 
         loadTrailersData();
@@ -157,6 +159,11 @@ public class DetailsActivity extends AppCompatActivity {
         loadReviewsData();
     }
 
+    /**
+     * Initializes favourite button according to the favourites list of the user.
+     * Defines also the listener on the button to check/uncheck the current movie as
+     * favourite.
+     */
     private void initializeFavourite() {
 
         Cursor cursor =
@@ -202,6 +209,12 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Stores the movie details in the favourites
+     * @param movieId
+     * @param movieTitle
+     * @param moviePoster
+     */
     private void insertData(String movieId, String movieTitle, String moviePoster){
         Log.d(LOG, "> Save favourite");
 
@@ -215,18 +228,27 @@ public class DetailsActivity extends AppCompatActivity {
         Log.d(LOG, "< Save favourite successful");
     }
 
+    /**
+     * Loads trailers movie related data.
+     */
     private void loadTrailersData() {
         Log.d(LOG, "> Trailers to be loaded");
         new FetchTrailerDataTask(movieService, new FetchMovieTrailersTaskCompleteListener()).
                 execute(movie.getId());
     }
 
+    /**
+     * Loads reviews movie related data.
+     */
     private void loadReviewsData() {
         Log.d(LOG, "> Reviews to be loaded");
         new FetchReviewDataTask(movieService, new FetchMovieReviewsTaskCompleteListener()).
                 execute(movie.getId());
     }
 
+    /**
+     * Listener for loading trailers movie data.
+     */
     public class FetchMovieTrailersTaskCompleteListener implements AsyncTaskCompleteListener<List<Trailer>,
             Map<String,Object>> {
         @Override
@@ -250,6 +272,9 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Listener for loading reviews movie data.
+     */
     public class FetchMovieReviewsTaskCompleteListener implements AsyncTaskCompleteListener<List<Review>,
             Map<String,Object>> {
         @Override
@@ -270,5 +295,13 @@ public class DetailsActivity extends AppCompatActivity {
             }
             mLoadingReviewsIndicator.setVisibility(View.INVISIBLE);
         }
+    }
+
+
+
+    @Override
+    public void onClick(String trailerYoutubeCode) {
+        startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse(YOUTUBE_URL + trailerYoutubeCode)));
     }
 }

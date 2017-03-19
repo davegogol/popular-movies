@@ -14,6 +14,11 @@ import java.util.List;
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder>  {
 
     private List<Trailer> mTrailersList;
+    private final TrailerAdapterOnClickHandler mClickHandler;
+
+    public TrailerAdapter(TrailerAdapterOnClickHandler trailerAdapterOnClickHandler) {
+        mClickHandler = trailerAdapterOnClickHandler;
+    }
 
     @Override
     public TrailerAdapter.TrailerAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -37,16 +42,36 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         return mTrailersList.size();
     }
 
-    class TrailerAdapterViewHolder extends RecyclerView.ViewHolder {
+    class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView mTrailerTextView;
+
         TrailerAdapterViewHolder(View view) {
             super(view);
             mTrailerTextView = (TextView) view.findViewById(R.id.trailer_data);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            String trailerCode = mTrailersList.get(adapterPosition).getCode();
+            mClickHandler.onClick(trailerCode);
         }
     }
 
     public void setTrailersData(List<Trailer> trailerList) {
         mTrailersList = trailerList;
         notifyDataSetChanged();
+    }
+
+    /**
+     * Defines the onClickHandler for the RecyclerView items.
+     */
+    public interface TrailerAdapterOnClickHandler {
+        /**
+         * OnClick on the Recycler view  item
+         * @param trailerYoutubeCode Trailer Youtube Code
+         */
+        void onClick(String trailerYoutubeCode);
     }
 }

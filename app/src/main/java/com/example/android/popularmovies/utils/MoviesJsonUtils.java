@@ -51,6 +51,7 @@ public final class MoviesJsonUtils {
             Trailer trailer = new Trailer();
             trailer.setId(jsonObject.getString("id"));
             trailer.setName(jsonObject.getString("name"));
+            trailer.setCode(jsonObject.getString("key"));
             parsedTrailers.add(trailer);
         }
         return parsedTrailers;
