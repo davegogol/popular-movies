@@ -27,6 +27,7 @@ import com.example.android.popularmovies.domain.Trailer;
 import com.example.android.popularmovies.service.MovieServiceImpl;
 import com.example.android.popularmovies.service.exception.MovieServiceException;
 import com.example.android.popularmovies.task.AsyncTaskCompleteListener;
+import com.example.android.popularmovies.task.FetchMovieDataTask;
 import com.example.android.popularmovies.task.FetchReviewDataTask;
 import com.example.android.popularmovies.task.FetchTrailerDataTask;
 import com.squareup.picasso.Picasso;
@@ -115,22 +116,23 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
             Log.d(LOG, "Movie details retrieved by Intent");
 
         }else if (intent != null && intent.hasExtra("movie.id")){
-            try {
-                String movieId = intent.getStringExtra("movie.id");
-                movie = movieService.getMovieById(movieId);
+            String movieId = intent.getStringExtra("movie.id");
+            String moviePoster = intent.getStringExtra("movie.poster");
 
-                movieTitleTextView.setText(movie.getName());
-                movieOverviewTextView.setText(movie.getName());
-                movieReleaseDateTextView.setText(movie.getReleaseDate());
-                movieAverageRateTextView.setText(String.valueOf(movie.getVoteAverage()));
+            movie = new Movie();
+            movie.setId(movieId);
+            movie.setPosterPath(moviePoster);
 
-            } catch (MovieServiceException e) {
-                Log.e(LOG, e.getMessage());
-                return;
-            }
+            new FetchMovieDataTask(movieService, new FetchMovieTaskCompleteListener()).
+                    execute(movieId);
 
+            Picasso.
+                    with(this).
+                    load(IMAGE_API + movie.getPosterPath()).
+                    into(moviePosterImageView);
+
+            //movie = movieService.getMovieById(movieId);
             Log.d(LOG, "Movie details retrieved by API");
-
         }else
             return;
 
@@ -294,6 +296,31 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 mReviewsError.setVisibility(View.VISIBLE);
             }
             mLoadingReviewsIndicator.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
+     * Listener for loading reviews movie data.
+     */
+    public class FetchMovieTaskCompleteListener implements AsyncTaskCompleteListener<Movie,
+            Map<String,Object>> {
+        @Override
+        public void onPreTaskExecute() {
+        }
+        @Override
+        public void onTaskComplete(Movie retrievedMovie, Map<String,Object> properties ) {
+            Log.d(LOG, "< Movie details loaded");
+            if(null != retrievedMovie){
+                movie.setOverview(retrievedMovie.getOverview());
+                movie.setName(retrievedMovie.getName());
+                movie.setReleaseDate(retrievedMovie.getReleaseDate());
+                movie.setVoteAverage(retrievedMovie.getVoteAverage());
+
+                movieTitleTextView.setText(movie.getName());
+                movieOverviewTextView.setText(movie.getOverview());
+                movieReleaseDateTextView.setText(movie.getReleaseDate());
+                movieAverageRateTextView.setText(String.valueOf(movie.getVoteAverage()));
+            }
         }
     }
 
