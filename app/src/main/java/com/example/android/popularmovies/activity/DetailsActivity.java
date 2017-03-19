@@ -1,20 +1,30 @@
 package com.example.android.popularmovies.activity;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.adapter.ReviewAdapter;
 import com.example.android.popularmovies.adapter.TrailerAdapter;
+import com.example.android.popularmovies.data.MovieContract;
+import com.example.android.popularmovies.domain.Movie;
 import com.example.android.popularmovies.domain.Review;
 import com.example.android.popularmovies.domain.Trailer;
 import com.example.android.popularmovies.service.MovieServiceImpl;
+import com.example.android.popularmovies.service.exception.MovieServiceException;
 import com.example.android.popularmovies.task.AsyncTaskCompleteListener;
 import com.example.android.popularmovies.task.FetchReviewDataTask;
 import com.example.android.popularmovies.task.FetchTrailerDataTask;
@@ -28,12 +38,15 @@ import java.util.Map;
  * the visualization of a single movie details.
  */
 public class DetailsActivity extends AppCompatActivity {
+    private final String LOG = this.getClass().getSimpleName();
     private static final String IMAGE_API = "http://image.tmdb.org/t/p/w150";
     private TextView movieTitleTextView;
     private TextView movieOverviewTextView;
     private TextView movieReleaseDateTextView;
     private TextView movieAverageRateTextView;
     private ImageView moviePosterImageView;
+
+    private ToggleButton favouriteToggleButton;
 
     private ProgressBar mLoadingReviewsIndicator;
     private ProgressBar mLoadingTrailersIndicator;
@@ -53,7 +66,7 @@ public class DetailsActivity extends AppCompatActivity {
     private ImageView mReviewsError;
 
     private MovieServiceImpl movieService = new MovieServiceImpl();
-    private String movieId;
+    private Movie movie = new Movie();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,27 +82,57 @@ public class DetailsActivity extends AppCompatActivity {
         mNoTrailers = (TextView)  findViewById(R.id.no_trailers);
         mLoadingReviewsIndicator = (ProgressBar) findViewById(R.id.pb_loading_reviews_indicator);
         mLoadingTrailersIndicator = (ProgressBar)findViewById(R.id.pb_loading_trailers_indicator);
+        favouriteToggleButton = (ToggleButton) findViewById(R.id.favouriteToggleButton);
 
         mTrailersError = (ImageView) findViewById(R.id.trailers_error);
         mReviewsError = (ImageView) findViewById(R.id.reviews_error);
 
         Intent intent = getIntent();
-        if(intent != null && intent.hasExtra("movie.title") && intent.hasExtra("movie.poster")) {
-            String title = intent.getStringExtra("movie.title");
-            String poster = intent.getStringExtra("movie.poster");
-            String releaseDate = intent.getStringExtra("movie.release_date");
-            String averageRate = intent.getStringExtra("movie.average_rate");
-            String overview = intent.getStringExtra("movie.overview");
-            movieId = intent.getStringExtra("movie.id");
-            movieTitleTextView.setText(title);
-            movieOverviewTextView.setText(overview);
-            movieReleaseDateTextView.setText(releaseDate);
-            movieAverageRateTextView.setText(averageRate);
+
+        if(intent != null && intent.hasExtra("movie.title") && intent.hasExtra("movie.poster")
+                && intent.hasExtra("movie.release_date") && intent.hasExtra("movie.overview") &&
+                intent.hasExtra("movie.average_rate")) {
+
+            movie.setName(intent.getStringExtra("movie.title"));
+            movie.setPosterPath(intent.getStringExtra("movie.poster"));
+            movie.setReleaseDate(intent.getStringExtra("movie.release_date"));
+            movie.setVoteAverage(Double.valueOf(intent.getStringExtra("movie.average_rate")));
+            movie.setOverview(intent.getStringExtra("movie.overview"));
+            movie.setId(intent.getStringExtra("movie.id"));
+
+            movieTitleTextView.setText(movie.getName());
+            movieOverviewTextView.setText(movie.getOverview());
+            movieReleaseDateTextView.setText(movie.getReleaseDate());
+            movieAverageRateTextView.setText(String.valueOf(movie.getVoteAverage()));
+
             Picasso.
                     with(this).
-                    load(IMAGE_API + poster).
+                    load(IMAGE_API + movie.getPosterPath()).
                     into(moviePosterImageView);
-        }
+
+            Log.d(LOG, "Movie details retrieved by Intent");
+
+        }else if (intent != null && intent.hasExtra("movie.id")){
+            try {
+                String movieId = intent.getStringExtra("movie.id");
+                movie = movieService.getMovieById(movieId);
+
+                movieTitleTextView.setText(movie.getName());
+                movieOverviewTextView.setText(movie.getName());
+                movieReleaseDateTextView.setText(movie.getReleaseDate());
+                movieAverageRateTextView.setText(String.valueOf(movie.getVoteAverage()));
+
+            } catch (MovieServiceException e) {
+                Log.e(LOG, e.getMessage());
+                return;
+            }
+
+            Log.d(LOG, "Movie details retrieved by API");
+
+        }else
+            return;
+
+        initializeFavourite();
 
         mTrailersRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_trailers);
         LinearLayoutManager layoutManager
@@ -114,14 +157,74 @@ public class DetailsActivity extends AppCompatActivity {
         loadReviewsData();
     }
 
+    private void initializeFavourite() {
+
+        Cursor cursor =
+                getContentResolver().query(
+                MovieContract.FavouriteEntry.CONTENT_URI.buildUpon().appendPath(movie.getId()).build(),
+                null,
+                null,
+                new String[]{movie.getId()},
+                null);
+
+        boolean state = cursor.getCount() == 1;
+        favouriteToggleButton.setChecked(state);
+
+        if(state)
+            favouriteToggleButton.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                R.drawable.favourite));
+        else
+            favouriteToggleButton.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                    R.drawable.nofavourite));
+
+        favouriteToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    favouriteToggleButton.setBackgroundDrawable(
+                            ContextCompat.getDrawable(getApplicationContext(), R.drawable.favourite));
+
+                    insertData(movie.getId(), movie.getName(), movie.getPosterPath());
+                    Log.d(LOG, "Checked Favourite successful");
+
+                } else {
+                    favouriteToggleButton.setBackgroundDrawable(
+                            ContextCompat.getDrawable(getApplicationContext(), R.drawable.nofavourite));
+
+                    getContentResolver().delete(
+                            MovieContract.FavouriteEntry.CONTENT_URI.buildUpon().appendPath(movie.getId()).build(),
+                            null,
+                            new String[]{movie.getId()}
+                    );
+                    Log.d(LOG, "Unchecked Favourite successful");
+                }
+            }
+        });
+    }
+
+    private void insertData(String movieId, String movieTitle, String moviePoster){
+        Log.d(LOG, "> Save favourite");
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.FavouriteEntry.COLUMN_MOVIE_ID, Integer.valueOf(movieId));
+        contentValues.put(MovieContract.FavouriteEntry.COLUMN_MOVIE_NAME, movieTitle);
+        contentValues.put(MovieContract.FavouriteEntry.COLUMN_MOVIE_POSTER, moviePoster);
+        getContentResolver().
+                insert(MovieContract.FavouriteEntry.CONTENT_URI.buildUpon().appendPath(movieId).build(),
+                        contentValues);
+        Log.d(LOG, "< Save favourite successful");
+    }
+
     private void loadTrailersData() {
+        Log.d(LOG, "> Trailers to be loaded");
         new FetchTrailerDataTask(movieService, new FetchMovieTrailersTaskCompleteListener()).
-                execute(movieId);
+                execute(movie.getId());
     }
 
     private void loadReviewsData() {
+        Log.d(LOG, "> Reviews to be loaded");
         new FetchReviewDataTask(movieService, new FetchMovieReviewsTaskCompleteListener()).
-                execute(movieId);
+                execute(movie.getId());
     }
 
     public class FetchMovieTrailersTaskCompleteListener implements AsyncTaskCompleteListener<List<Trailer>,
@@ -134,6 +237,8 @@ public class DetailsActivity extends AppCompatActivity {
 
         @Override
         public void onTaskComplete(List<Trailer> listMovieTrailersResult, Map<String,Object> properties ) {
+            Log.d(LOG, "< Trailers loaded");
+
             trailersList = listMovieTrailersResult;
             mTrailerAdapter.setTrailersData(trailersList);
             if(trailersList != null && trailersList.size() == 0) mNoTrailers.setVisibility(View.VISIBLE);
@@ -154,6 +259,8 @@ public class DetailsActivity extends AppCompatActivity {
         }
         @Override
         public void onTaskComplete(List<Review> listMovieReviewsResult, Map<String,Object> properties ) {
+            Log.d(LOG, "< Reviews loaded");
+
             reviewsList = listMovieReviewsResult;
             mReviewAdapter.setReviewsListData(reviewsList);
             if(reviewsList != null && reviewsList.size() == 0) mNoReviews.setVisibility(View.VISIBLE);

@@ -39,5 +39,10 @@ public interface MovieService {
      */
     public List<Review> getReviewsByMovieId(String movieId) throws MovieServiceException;
 
-
+    /**
+     * Retrieves the movie details by its ID.
+     * @return movie
+     * @throws MovieServiceException
+     */
+    public Movie getMovieById(String movieId) throws MovieServiceException;
 }

@@ -29,8 +29,7 @@ import com.example.android.popularmovies.data.MovieContract;
 import com.example.android.popularmovies.domain.Movie;
 import com.example.android.popularmovies.service.MovieServiceImpl;
 import com.example.android.popularmovies.task.AsyncTaskCompleteListener;
-import com.example.android.popularmovies.task.FetchMovieDataTask;
-
+import com.example.android.popularmovies.task.FetchMoviesDataTask;
 
 /**
  * Main Activity displayed at start-up time.
@@ -84,9 +83,14 @@ public class MainActivity extends AppCompatActivity implements
                  intent.putExtra("movie.id", moviesList.get(position).getId());
                  intent.putExtra("movie.title", moviesList.get(position).getName());
                  intent.putExtra("movie.poster", moviesList.get(position).getPosterPath());
-                 intent.putExtra("movie.release_date", moviesList.get(position).getReleaseDate());
-                 intent.putExtra("movie.overview", moviesList.get(position).getOverview());
-                 intent.putExtra("movie.average_rate", String.valueOf(moviesList.get(position).getVoteAverage()));
+
+                 if(moviesList.get(position).getReleaseDate() != null)
+                     intent.putExtra("movie.release_date", moviesList.get(position).getReleaseDate());
+                 if(moviesList.get(position).getOverview() != null)
+                     intent.putExtra("movie.overview", moviesList.get(position).getOverview());
+                 if(moviesList.get(position).getVoteAverage() != 0)
+                     intent.putExtra("movie.average_rate", String.valueOf(moviesList.get(position).getVoteAverage()));
+
                  startActivity(intent);
              }
         });
@@ -122,11 +126,11 @@ public class MainActivity extends AppCompatActivity implements
         if(shownSortingPreference.equals( getResources().getStringArray(R.array.listvalues)[2])){
             mLoadingIndicator.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.INVISIBLE);
-            
+            movieAdapter.clear();
             //TODO: better on separated thread
-            getSupportLoaderManager().initLoader(ID_MOVIE_LOADER, null, this);
+            getSupportLoaderManager().restartLoader(ID_MOVIE_LOADER, null, this);
         } else
-            new FetchMovieDataTask(movieService, new FetchMyDataTaskCompleteListener()).
+            new FetchMoviesDataTask(movieService, new FetchMyDataTaskCompleteListener()).
                 execute(selectedSortingPreference);
     }
 
@@ -167,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements
         public void onPreTaskExecute() {
             gridView.setVisibility(View.INVISIBLE);
             errorImageView.setVisibility(View.INVISIBLE);
-
             mLoadingIndicator.setVisibility(View.VISIBLE);
             movieAdapter.clear();
         }
@@ -235,8 +238,11 @@ public class MainActivity extends AppCompatActivity implements
                 data.moveToPosition(i);
                 movie.setName(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_NAME)));
                 movie.setPosterPath(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_POSTER)));
+                movie.setId(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_ID)));
+                movies.add(movie);
             }
-            movieAdapter.addAll(movies);
+            moviesList = movies;
+            movieAdapter.addAll(moviesList);
         }else
             movieAdapter.clear();
     }
@@ -251,5 +257,4 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoaderReset(Loader<Cursor> loader) {
         movieAdapter.clear();
     }
-
 }

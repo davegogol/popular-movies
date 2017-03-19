@@ -88,6 +88,21 @@ public class MoviesAPIClient {
         return new JSONObject(reviewsResponseBody);
     }
 
+    /**
+     * Returns the movie details as JSON string.
+     * @return JSON
+     */
+    public JSONObject getMovieById(String movieId) throws IOException, JSONException {
+        Uri builtUri = Uri.parse(THE_MOVIE_API_URL).buildUpon()
+                .appendPath(movieId)
+                .appendQueryParameter(KEY_PARAM, AppConfig.KEY)
+                .build();
+        URL url = buildUrl(builtUri);
+        String reviewsResponseBody = getStringBodyResponseFromHttpUrl(url);
+        return new JSONObject(reviewsResponseBody);
+    }
+
+
     private String getMoviesBySortingCriteria(String sortingCriteria) throws IOException {
         URL moviesUrl = buildUrlBySortingCriteria(sortingCriteria);
         return getStringBodyResponseFromHttpUrl(moviesUrl);

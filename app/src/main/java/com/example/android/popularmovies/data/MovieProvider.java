@@ -6,7 +6,6 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 
 /**
  * This class serves as the ContentProvider for all of Popular Movies's data. This class allows us to
@@ -24,7 +23,8 @@ public class MovieProvider extends ContentProvider {
     public static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
-        matcher.addURI(authority, MovieContract.PATH_FAVOURITE + "/#", MOVIE_ID);
+        matcher.addURI(authority, MovieContract.PATH_FAVOURITES + "/#", MOVIE_ID);
+        matcher.addURI(authority, MovieContract.PATH_FAVOURITES, MOVIE);
         return matcher;
     }
 
@@ -65,7 +65,6 @@ public class MovieProvider extends ContentProvider {
         return cursor;
     }
 
-    @Nullable
     @Override
     public String getType(Uri uri) {
         throw new RuntimeException(
@@ -96,7 +95,7 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_ID:
                 deletedRows =
                         db.delete(MovieContract.FavouriteEntry.TABLE_NAME,
-                            "WHERE " + MovieContract.FavouriteEntry.COLUMN_MOVIE_ID + " = ?",
+                                MovieContract.FavouriteEntry.COLUMN_MOVIE_ID + " = ?",
                             selectionArgs
                             );
                 break;

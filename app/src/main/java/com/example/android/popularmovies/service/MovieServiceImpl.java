@@ -78,6 +78,20 @@ public class MovieServiceImpl implements MovieService {
         return reviewsList;
     }
 
+    @Override
+    public Movie getMovieById(String movieId) throws MovieServiceException {
+        if(movieId == null || "".equals(movieId) )
+            throw new IllegalArgumentException("movieId must be not null/empty!");
+        Movie movie = null;
+        try{
+            JSONObject movieJson = moviesAPIClient.getMovieById(movieId);
+            movie = MoviesJsonUtils.getMovie(movieJson);
+        }catch (Exception e){
+            handleException(e);
+        }
+        return movie;
+    }
+
     private void handleException(Exception e) throws MovieServiceException {
         Log.e(TAG, "Exception thrown!", e);
         String exceptionTag = "";
