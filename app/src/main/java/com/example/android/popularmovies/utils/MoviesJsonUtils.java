@@ -75,4 +75,21 @@ public final class MoviesJsonUtils {
         }
         return parsedReviews;
     }
+
+    /**
+     * Returns movie information from JSON String representation.
+     * @param object JSON Movie information
+     * @return Movie
+     * @throws JSONException
+     */
+    public static Movie getMovie(JSONObject object) throws JSONException {
+        Movie movie = new Movie();
+        movie.setId(object.getString("id"));
+        movie.setPosterPath(object.getString("poster_path"));
+        movie.setReleaseDate(object.getString("release_date"));
+        movie.setOverview(object.getString("overview"));
+        movie.setName(object.getString("title"));
+        movie.setVoteAverage(object.getDouble("vote_average"));
+        return movie;
+    }
 }

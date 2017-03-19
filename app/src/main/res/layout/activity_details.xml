@@ -18,6 +18,12 @@
                 android:layout_height="@dimen/image_layout_height"
                 android:scaleType="centerCrop" />
         </LinearLayout>
+        <ToggleButton
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:id="@+id/favouriteToggleButton"
+            android:textOn=""
+            android:textOff=""/>
         <LinearLayout
             android:orientation="vertical"
             android:layout_height="wrap_content"

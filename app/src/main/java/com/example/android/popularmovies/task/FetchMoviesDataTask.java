@@ -15,8 +15,8 @@ import com.example.android.popularmovies.service.exception.MovieServiceException
 /**
  * This class represents an AsyncTask definition for retrieving movie data from a source.
  */
-public class FetchMovieDataTask extends AsyncTask<String, Void, List<Movie>> {
-    private static final String TAG = FetchMovieDataTask.class.getSimpleName();
+public class FetchMoviesDataTask extends AsyncTask<String, Void, List<Movie>> {
+    private static final String TAG = FetchMoviesDataTask.class.getSimpleName();
 
     private MovieService movieService;
     private static final int TIME_IN_MILLIS = 500;
@@ -28,8 +28,8 @@ public class FetchMovieDataTask extends AsyncTask<String, Void, List<Movie>> {
     private String selectedSortingPreference;
     private AsyncTaskCompleteListener<List<Movie>, Map<String, Object>> listener;
 
-    public FetchMovieDataTask(MovieService movieService,
-                              AsyncTaskCompleteListener<List<Movie>, Map<String, Object>> listener) {
+    public FetchMoviesDataTask(MovieService movieService,
+                               AsyncTaskCompleteListener<List<Movie>, Map<String, Object>> listener) {
         this.movieService = movieService;
         this.listener = listener;
     }
