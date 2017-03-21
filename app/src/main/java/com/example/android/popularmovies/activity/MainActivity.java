@@ -113,8 +113,10 @@ public class MainActivity extends AppCompatActivity implements
     public void onResume() {
         super.onResume();
         String preferenceSorting = sharedPreferences.getString(PREF_SORTING_KEY, "");
-        if(!preferenceSorting.equals(shownSortingPreference) && moviesList != null){
-            Log.d(TAG, "Sorting preference was changed.");
+        String favouritesKey = getResources().getStringArray(R.array.listvalues)[2];
+        if((!preferenceSorting.equals(shownSortingPreference)  || preferenceSorting.equals(favouritesKey) )
+                && moviesList != null){
+            Log.d(TAG, "Sorting preference/Favourites list was changed.");
             loadMoviesData();
         }
     }
@@ -127,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements
             mLoadingIndicator.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.INVISIBLE);
             movieAdapter.clear();
-            //TODO: better on separated thread
             getSupportLoaderManager().restartLoader(ID_MOVIE_LOADER, null, this);
         } else
             new FetchMoviesDataTask(movieService, new FetchMyDataTaskCompleteListener()).
@@ -231,20 +232,23 @@ public class MainActivity extends AppCompatActivity implements
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         gridView.setVisibility(View.VISIBLE);
 
-        List<Movie> movies = new ArrayList<>();
-        if(data != null){
-            for(int i = 0; i < data.getCount(); i ++){
-                Movie movie = new Movie();
-                data.moveToPosition(i);
-                movie.setName(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_NAME)));
-                movie.setPosterPath(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_POSTER)));
-                movie.setId(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_ID)));
-                movies.add(movie);
-            }
-            moviesList = movies;
-            movieAdapter.addAll(moviesList);
-        }else
-            movieAdapter.clear();
+        if (shownSortingPreference.equals(getResources().getStringArray(R.array.listvalues)[2])) {
+            List<Movie> movies = new ArrayList<>();
+            if (data.getCount() > 0) {
+
+                for (int i = 0; i < data.getCount(); i++) {
+                    Movie movie = new Movie();
+                    data.moveToPosition(i);
+                    movie.setName(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_NAME)));
+                    movie.setPosterPath(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_POSTER)));
+                    movie.setId(data.getString(data.getColumnIndex(MovieContract.FavouriteEntry.COLUMN_MOVIE_ID)));
+                    movies.add(movie);
+                }
+                moviesList = movies;
+                movieAdapter.addAll(moviesList);
+            } else
+                movieAdapter.clear();
+        }
     }
 
     /**

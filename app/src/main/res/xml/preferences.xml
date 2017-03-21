@@ -4,6 +4,7 @@
                 android:key="PREF_SORTING"
                 android:title="Sorting preference"
                 android:summary="Select the criteria for displaying the movies."
+                android:defaultValue="POPULARITY"
                 android:entries="@array/listentries"
                 android:entryValues="@array/listvalues" />
 </PreferenceScreen>
